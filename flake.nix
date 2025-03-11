@@ -30,6 +30,7 @@
             pyzmq
             scikit-learn
             jupytext
+            seaborn
           ]))
           zeromq
           (vscode-with-extensions.override {
