@@ -24,6 +24,7 @@
             pypkgs.pip
             pypkgs.notebook
             pypkgs.xlrd
+            pypkgs.statsmodels
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
