@@ -23,7 +23,7 @@
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
-            vscodeExtensions = [
+            vscodeExtensions = with vscode-extensions; [
               ms-python.python
               ms-azuretools.vscode-docker
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
