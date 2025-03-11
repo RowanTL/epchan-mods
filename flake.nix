@@ -29,6 +29,7 @@
             pypkgs.ipykernel
             pypkgs.pyzmq
           ]))
+          zeromq
           (vscode-with-extensions.override {
             vscode = vscodium;
             vscodeExtensions = with vscode-extensions; [
