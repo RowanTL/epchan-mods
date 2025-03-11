@@ -44,6 +44,7 @@
               mechatroner.rainbow-csv
               donjayamanne.githistory
               ms-python.vscode-pylance
+              ms-python.debugpy
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
               # {
               #   name = "calva";
