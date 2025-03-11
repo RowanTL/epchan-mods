@@ -21,6 +21,8 @@
             pypkgs.matplotlib
             pypkgs.numpy
             pypkgs.jupyter
+            pypkgs.pip
+            pypkgs.notebook
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
