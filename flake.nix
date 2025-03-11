@@ -27,6 +27,7 @@
             pypkgs.statsmodels
             pypkgs.jupyterlab
             pypkgs.ipykernel
+            pypkgs.pyzmq
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
