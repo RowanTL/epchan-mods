@@ -15,19 +15,21 @@
       pkgs.mkShellNoCC {
         buildInputs = [ pkgs.bashInteractive ];
         packages = with pkgs; [
-          (python3.withPackages (pypkgs: [
-            pypkgs.pandas
-            pypkgs.polars
-            pypkgs.matplotlib
-            pypkgs.numpy
-            pypkgs.jupyter
-            pypkgs.pip
-            pypkgs.notebook
-            pypkgs.xlrd
-            pypkgs.statsmodels
-            pypkgs.jupyterlab
-            pypkgs.ipykernel
-            pypkgs.pyzmq
+          (python3.withPackages (pypkgs: with pypkgs; [
+            pandas
+            polars
+            matplotlib
+            numpy
+            jupyter
+            pip
+            notebook
+            xlrd
+            statsmodels
+            jupyterlab
+            ipykernel
+            pyzmq
+            scikit-learn
+            jupytext
           ]))
           zeromq
           (vscode-with-extensions.override {
@@ -54,7 +56,7 @@
         ];
         shellHook = ''
           export SHELL=${pkgs.lib.getExe pkgs.bashInteractive}
-          echo "starting codium"
+          echo "starting code"
           # codium .
           code .
         '';
