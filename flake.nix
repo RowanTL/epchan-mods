@@ -20,6 +20,7 @@
             pypkgs.polars
             pypkgs.matplotlib
             pypkgs.numpy
+            pypkgs.jupyter-core
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
