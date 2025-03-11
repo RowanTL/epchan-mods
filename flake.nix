@@ -26,6 +26,7 @@
             vscodeExtensions = with vscode-extensions; [
               ms-python.python
               ms-azuretools.vscode-docker
+              ms-toolsai.datawrangler
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
               # {
               #   name = "calva";
