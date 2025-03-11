@@ -55,7 +55,8 @@
         shellHook = ''
           export SHELL=${pkgs.lib.getExe pkgs.bashInteractive}
           echo "starting codium"
-          codium .
+          # codium .
+          code .
         '';
       };
   };
