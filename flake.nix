@@ -25,6 +25,8 @@
             pypkgs.notebook
             pypkgs.xlrd
             pypkgs.statsmodels
+            pypkgs.jupyterlab
+            pypkgs.ipykernel
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
@@ -33,6 +35,10 @@
               ms-azuretools.vscode-docker
               ms-toolsai.datawrangler
               ms-toolsai.jupyter
+              eamodio.gitlens
+              bbenoist.nix
+              mechatroner.rainbow-csv
+              donjayamanne.githistory
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
               # {
               #   name = "calva";
