@@ -8,6 +8,7 @@
   outputs = { nixpkgs, ... }:
   let system = "x86_64-linux"; in
   {
+    allowUnfree = true;
     devShells."${system}".default =
     let
       pkgs = nixpkgs.legacyPackages."${system}";
