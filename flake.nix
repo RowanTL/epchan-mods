@@ -20,7 +20,7 @@
             pypkgs.polars
             pypkgs.matplotlib
             pypkgs.numpy
-            pypkgs.jupyter-core
+            pypkgs.jupyter
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
@@ -28,6 +28,7 @@
               ms-python.python
               ms-azuretools.vscode-docker
               ms-toolsai.datawrangler
+              ms-toolsai.jupyter
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
               # {
               #   name = "calva";
