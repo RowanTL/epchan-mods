@@ -28,6 +28,7 @@
             pypkgs.jupyterlab
             pypkgs.ipykernel
             pypkgs.pyzmq
+            pypkgs.pylance
           ]))
           zeromq
           (vscode-with-extensions.override {
