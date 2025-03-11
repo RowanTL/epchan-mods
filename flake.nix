@@ -23,6 +23,7 @@
             pypkgs.jupyter
             pypkgs.pip
             pypkgs.notebook
+            pypkgs.xlrd
           ]))
           (vscode-with-extensions.override {
             vscode = vscodium;
