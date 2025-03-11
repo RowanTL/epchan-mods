@@ -32,7 +32,7 @@
           ]))
           zeromq
           (vscode-with-extensions.override {
-            vscode = vscodium;
+            # vscode = vscodium;
             vscodeExtensions = with vscode-extensions; [
               ms-python.python
               ms-azuretools.vscode-docker
