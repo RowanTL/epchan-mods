@@ -28,7 +28,6 @@
             pypkgs.jupyterlab
             pypkgs.ipykernel
             pypkgs.pyzmq
-            pypkgs.pylance
           ]))
           zeromq
           (vscode-with-extensions.override {
@@ -42,6 +41,7 @@
               bbenoist.nix
               mechatroner.rainbow-csv
               donjayamanne.githistory
+              ms-python.vscode-pylance
               # pkgs.vscode-utils.extensionsFromVscodeMarketplace [
               # {
               #   name = "calva";
