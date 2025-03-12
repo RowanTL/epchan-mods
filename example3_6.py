@@ -70,6 +70,11 @@ skresults = reg.fit(dat[1].to_numpy().reshape(-1, 1), dat[0].to_numpy())
 hedgeRatio=results.params
 skhedgeRatio=skresults.coef_
 
+# see what happens when use sklearn's fit.
+# Can try this with many different ways of fitting
+# to see what happens.
+# hedgeRatio[0] = skhedgeRatio[0]
+
 print(f"sm hedge ratio: {hedgeRatio}")
 print(f"sk hedge ratio: {skhedgeRatio}")
 
@@ -102,13 +107,13 @@ df['positions_GLD_Short']=0
 
 df['positions_GDX_Short']=0
 
-df.loc[df.zscore>=2, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
+df.loc[df.zscore>=1, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
 
-df.loc[df.zscore<=-2, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
+df.loc[df.zscore<=-1, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
 
-df.loc[df.zscore<=1, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
+df.loc[df.zscore<=0.5, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
 
-df.loc[df.zscore>=-1, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
+df.loc[df.zscore>=0.5, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
 
 df.fillna(method='ffill', inplace=True) # ensure existing positions are carried forward unless there is an exit signal
 
@@ -126,11 +131,11 @@ pnl=(np.array(positions.shift())*np.array(dailyret)).sum(axis=1)
 
 sharpeTrainset=np.sqrt(252)*np.mean(pnl[trainset[1:]])/np.std(pnl[trainset[1:]])
 
-sharpeTrainset
+print(f"train sharpe: {sharpeTrainset}")
 
 sharpeTestset=np.sqrt(252)*np.mean(pnl[testset])/np.std(pnl[testset])
 
-sharpeTestset
+print(f"Test sharpe: {sharpeTestset}")
 
 plt.plot(np.cumsum(pnl[testset]))
 plt.show()
