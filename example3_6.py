@@ -22,7 +22,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 import statsmodels.api as sm
-from statsmodels.graphics.regressionplots import abline_plot
 from sklearn import linear_model
 
 df1=pd.read_excel('GLD.xls')
@@ -125,13 +124,18 @@ positions=np.array(positions_Long)+np.array(positions_Short)
 
 positions=pd.DataFrame(positions)
 
+# Assuming selling at the day's close
 dailyret=df.loc[:, ('Adj Close_GLD', 'Adj Close_GDX')].pct_change()
 
+# Combines the dailyret and positions based on the 0s, 1s, and -1s.
+# pnl for profit and loss
 pnl=(np.array(positions.shift())*np.array(dailyret)).sum(axis=1)
 
+# Pairs trading is a type of market neutral strategy
+# risk free rate 0 because of pair trading strategy? I still don't understand sorta.
 sharpeTrainset=np.sqrt(252)*np.mean(pnl[trainset[1:]])/np.std(pnl[trainset[1:]])
 
-print(f"train sharpe: {sharpeTrainset}")
+print(f"Train sharpe: {sharpeTrainset}")
 
 sharpeTestset=np.sqrt(252)*np.mean(pnl[testset])/np.std(pnl[testset])
 
