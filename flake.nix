@@ -31,6 +31,7 @@
             scikit-learn
             jupytext
             seaborn
+            spyder
           ]))
           zeromq
           (vscode-with-extensions.override {
@@ -58,9 +59,9 @@
         ];
         shellHook = ''
           export SHELL=${pkgs.lib.getExe pkgs.bashInteractive}
-          echo "starting code"
+          # echo "starting code"
           # codium .
-          code .
+          # code .
         '';
       };
   };
