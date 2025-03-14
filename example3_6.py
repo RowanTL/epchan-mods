@@ -12,6 +12,8 @@
 #     name: python3
 # ---
 
+# https://algotrading101.com/learn/pairs-trading-guide/
+
 # # Pair Trading of GLD and GDX
 
 import numpy as np
@@ -31,16 +33,13 @@ df2=pd.read_excel('GDX.xls')
 df=pd.merge(df1, df2, on='Date', suffixes=('_GLD', '_GDX'))
 
 df.set_index('Date', inplace=True)
-
 df.sort_index(inplace=True)
-
-df.shape
 
 trainset=np.arange(0, 252)
 
 testset=np.arange(trainset.shape[0], df.shape[0])
 
-# Long GLD, short GDX
+# Shorts/Longs each of the stocks depending on differences in spread
 # ## Determine hedge ratio on trainset
 
 # This code is nice, but I need a specific fit.
@@ -51,7 +50,7 @@ plt.show()
 dat = df.loc[:, 'Adj Close_GLD'].iloc[trainset], df.loc[:, 'Adj Close_GDX'].iloc[trainset]
 #model=sm.OLS(sm.add_constant(dat[0]), dat[1])  # dat[0] is y, dat[1] is X
 model=sm.OLS(dat[0], dat[1])
-reg = linear_model.LinearRegression()
+reg = linear_model.HuberRegressor()
 
 # df.loc[:, 'Adj Close_GLD']
 
@@ -77,15 +76,25 @@ skhedgeRatio=skresults.coef_
 print(f"sm hedge ratio: {hedgeRatio}")
 print(f"sk hedge ratio: {skhedgeRatio}")
 
+# Why is this a good measure of spread?
 # ##  spread = GLD - hedgeRatio*GDX
 
-spread=df.loc[:, 'Adj Close_GLD']-hedgeRatio[0]*df.loc[:, 'Adj Close_GDX']
+spread=df.loc[:, 'Adj Close_GLD']-hedgeRatio.iloc[0]*df.loc[:, 'Adj Close_GDX']
 plt.title("trainset spread")
 plt.plot(spread.iloc[trainset])
 plt.show()
 
 plt.title("testset spread")
 plt.plot(spread.iloc[testset])
+plt.show()
+
+plt.title("Adj Close Price Charts")
+plt.plot(df["Adj Close_GLD"], label="GLD")
+plt.plot(df["Adj Close_GDX"], label="GDX")
+plt.plot(spread, label="Spread")
+plt.xlabel("Date")
+plt.ylabel("Price")
+plt.legend()
 plt.show()
 
 spreadMean=np.mean(spread.iloc[trainset])
@@ -106,15 +115,28 @@ df['positions_GLD_Short']=0
 
 df['positions_GDX_Short']=0
 
-df.loc[df.zscore>=1, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
+# This is where buy/sell decisions are made. Positions held overnight? Maybe.
+# Literally shorts the entire spread, not each stock individually. Shorts both in this case.
+#  The - doesn't necessarily mean it's losing money however. If the GLD_Short is -1 and
+#  the pct_change for that day is also negative, it's a gain for the trader.
+#  Remember that these stocks are correlated. When price of one moves, it's likely
+#  the other one will follow. Sounds like statisical arbitrage Dr. Chan.
+#  Leeching strategy isn't it. It's gonna take time to understand this crazy
+#  complex system that takes years to fully grasp. This is why I'm going back to
+#  school. I can steal Taylor's directional code for this.
+#
+# For pair trading: Short the outperforming stock and long the underperforming one.
+# In this case, 1 is longing, -1 is shorting regardless of the _Strategy name.
+df.loc[df.zscore > 1.5, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
 
-df.loc[df.zscore<=-1, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
+df.loc[df.zscore < -1.5, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
 
-df.loc[df.zscore<=0.5, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
+df.loc[df.zscore <= 1.5, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
 
-df.loc[df.zscore>=0.5, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
+df.loc[df.zscore >= -1.5, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
 
-df.fillna(method='ffill', inplace=True) # ensure existing positions are carried forward unless there is an exit signal
+#df.fillna(method='ffill', inplace=True) # ensure existing positions are carried forward unless there is an exit signal
+df.ffill(inplace=True)
 
 positions_Long=df.loc[:, ('positions_GLD_Long', 'positions_GDX_Long')]
 
@@ -124,12 +146,13 @@ positions=np.array(positions_Long)+np.array(positions_Short)
 
 positions=pd.DataFrame(positions)
 
-# Assuming selling at the day's close
+# Assuming trading at the day's close
 dailyret=df.loc[:, ('Adj Close_GLD', 'Adj Close_GDX')].pct_change()
 
 # Combines the dailyret and positions based on the 0s, 1s, and -1s.
 # pnl for profit and loss
-pnl=(np.array(positions.shift())*np.array(dailyret)).sum(axis=1)
+pnl_per = np.array(positions.shift())*np.array(dailyret)
+pnl=pnl_per.sum(axis=1)
 
 # Pairs trading is a type of market neutral strategy
 # risk free rate 0 because of pair trading strategy? I still don't understand sorta.
@@ -141,6 +164,7 @@ sharpeTestset=np.sqrt(252)*np.mean(pnl[testset])/np.std(pnl[testset])
 
 print(f"Test sharpe: {sharpeTestset}")
 
+plt.title("cummulative sum of profit and loss on the testset")
 plt.plot(np.cumsum(pnl[testset]))
 plt.show()
 
