@@ -34,6 +34,7 @@
             spyder
             fastexcel
           ]))
+          octaveFull
           zeromq
           (vscode-with-extensions.override {
             # vscode = vscodium;
