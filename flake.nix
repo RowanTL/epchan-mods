@@ -2,7 +2,7 @@
   description = "A flake for developing in a clojure environment with vscode";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
   outputs = { nixpkgs, ... }:
@@ -32,6 +32,7 @@
             jupytext
             seaborn
             spyder
+            fastexcel
           ]))
           zeromq
           (vscode-with-extensions.override {
