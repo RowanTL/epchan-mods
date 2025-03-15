@@ -32,6 +32,7 @@
             jupytext
             seaborn
             spyder
+            python-calamine
           ]))
           zeromq
           (vscode-with-extensions.override {
