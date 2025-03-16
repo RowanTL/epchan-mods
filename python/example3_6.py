@@ -127,13 +127,13 @@ df['positions_GDX_Short']=0
 #
 # For pair trading: Short the outperforming stock and long the underperforming one.
 # In this case, 1 is longing, -1 is shorting regardless of the _Strategy name.
-df.loc[df.zscore > 1.5, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
+df.loc[df.zscore > 1, ('positions_GLD_Short', 'positions_GDX_Short')]=[-1, 1] # Short spread
 
-df.loc[df.zscore < -1.5, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
+df.loc[df.zscore < -1, ('positions_GLD_Long', 'positions_GDX_Long')]=[1, -1] # Buy spread
 
-df.loc[df.zscore <= 1.5, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
+df.loc[df.zscore <= 0.5, ('positions_GLD_Short', 'positions_GDX_Short')]=0 # Exit short spread
 
-df.loc[df.zscore >= -1.5, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
+df.loc[df.zscore >= -0.5, ('positions_GLD_Long', 'positions_GDX_Long')]=0 # Exit long spread
 
 #df.fillna(method='ffill', inplace=True) # ensure existing positions are carried forward unless there is an exit signal
 df.ffill(inplace=True)
@@ -154,13 +154,20 @@ dailyret=df.loc[:, ('Adj Close_GLD', 'Adj Close_GDX')].pct_change()
 pnl_per = np.array(positions.shift())*np.array(dailyret)
 pnl=pnl_per.sum(axis=1)
 
+# Transaction cost calculation. Not implemented yet.
+one_way_transaction_cost = 0.0005
+t_costs_per = (abs(pnl_per) * one_way_transaction_cost)
+pnl_t_costs = (pnl_per - t_costs_per).sum(axis=1)
+
 # Pairs trading is a type of market neutral strategy
 # risk free rate 0 because of pair trading strategy? I still don't understand sorta.
 sharpeTrainset=np.sqrt(252)*np.mean(pnl[trainset[1:]])/np.std(pnl[trainset[1:]])
+#sharpeTrainset=np.sqrt(252)*np.mean(pnl_t_costs[trainset[1:]])/np.std(pnl_t_costs[trainset[1:]])
 
 print(f"Train sharpe: {sharpeTrainset}")
 
 sharpeTestset=np.sqrt(252)*np.mean(pnl[testset])/np.std(pnl[testset])
+#sharpeTestset=np.sqrt(252)*np.mean(pnl_t_costs[testset])/np.std(pnl_t_costs[testset])
 
 print(f"Test sharpe: {sharpeTestset}")
 
